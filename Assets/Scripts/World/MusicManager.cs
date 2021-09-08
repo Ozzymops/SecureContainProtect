@@ -299,6 +299,7 @@ public class MusicManager : NetworkBehaviour
                 // return to previous
                 Debug.Log("Returning to non-chase music!");
                 PlayClip(0);
+                chaseMusicState = ChaseMusicState.Intro;
             }
         }
     }
