@@ -17,9 +17,9 @@ public class MusicManager : NetworkBehaviour
     private ChaseMusicState chaseMusicState;
     private ChaseMusicState previousChaseMusicState;
     private int[] chaseMusicSelection;
-    private float chaseDistance;
+    [SerializeField] private float chaseDistance;
     private bool doingSequence;
-    private float clipTimer;
+    [SerializeField] private float clipTimer;
 
     public override void OnStartClient()
     {
@@ -196,6 +196,52 @@ public class MusicManager : NetworkBehaviour
             }
 
             Debug.Log("Starting sequence with chase state Intro!");
+        }
+        else
+        {
+            // interrupt intro if close enough
+            if (chaseMusicState == ChaseMusicState.Intro)
+            {
+                if (chaseDistance < 10)
+                {
+                    clipTimer = 0.1f;
+                    Debug.Log("Interrupted intro!");
+                }
+            }
+
+            // interrupt outro
+            if (chaseMusicState == ChaseMusicState.Outro)
+            {
+                switch (type)
+                {
+                    case 0: // the Sculpture
+                        chaseMusicSelection = new int[] { 4, 5, 6, 7, 8 };
+                        break;
+
+                    case 1: // the Plague Doctor
+                        chaseMusicSelection = new int[] { 9, 10, 11, 12 };
+                        break;
+
+                    case 2: // the Old Man
+                        chaseMusicSelection = new int[] { 13, 14, 15, 16 };
+                        break;
+
+                    case 3: // the Forest Guardian
+                        chaseMusicSelection = new int[] { 18, 19, 20 };
+                        break;
+
+                    case 4: // the Shy Guy
+                        chaseMusicSelection = new int[] { 22, 23, 24 };
+                        break;
+
+                    default:
+                        break;
+                }
+
+                chaseMusicState = ChaseMusicState.Loop;
+                clipTimer = 0.0f;
+                Debug.Log("Interrupted outro!");
+            }
         }
     }
 
