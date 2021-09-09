@@ -18,7 +18,8 @@ public class BasicPlayer : NetworkBehaviour
     protected bool dead;
     protected float health;
     protected float maxHealth;
-    protected float movementSpeed;
+    protected float baseMovementSpeed;
+    protected float modifiedMovementSpeed;
 
     public bool visibleDead;
     public float visibleHealth;
@@ -105,9 +106,23 @@ public class BasicPlayer : NetworkBehaviour
         visibleMaxHealth = maxHealth;
     }
 
+    protected void Health()
+    {
+        health = Mathf.Clamp(health, 0, maxHealth);
+
+        if (health <= 0)
+        {
+            dead = true;
+        }
+        else
+        {
+            dead = false;
+        }
+    }
+
     private Vector2 MovementInput()
     {
-        return new Vector2(Input.GetAxisRaw("Horizontal") * movementSpeed, Input.GetAxisRaw("Vertical") * movementSpeed);
+        return new Vector2(Input.GetAxisRaw("Horizontal") * modifiedMovementSpeed, Input.GetAxisRaw("Vertical") * modifiedMovementSpeed);
     }
 
     private Vector2 MouseMovementInput()
