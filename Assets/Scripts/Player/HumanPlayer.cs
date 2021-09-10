@@ -5,6 +5,17 @@ using Mirror;
 
 public class HumanPlayer : BasicPlayer
 {
+    #region Reference
+    private MusicManager musicManager;
+    private HumanSoundManager humanSoundManager;
+    #endregion
+
+    #region Misc. variables
+    [SerializeField] private float scanTimer;
+    [SerializeField] private List<GameObject> scannedSCP = new List<GameObject>();
+    [SerializeField] private List<GameObject> visibleSCP = new List<GameObject>();
+    #endregion
+
     #region HumanPlayer unique variables
     private float stamina;
     private float maxStamina;
@@ -20,10 +31,17 @@ public class HumanPlayer : BasicPlayer
     private float blinkClosedTimer;
     private float blinkTimerDrainMultiplier;
 
+    private float chaseTimer;
+    [SerializeField] private float lastNearestDistance;
+
     public float visibleStamina;
     public float visibleMaxStamina;
     public float visibleBlinkTimer;
     public float visibleMaxBlinkTimer;
+
+    public bool visibleMoving;
+    public bool visibleSprinting;
+    public bool visibleSneaking;
     #endregion
 
     #region Equipped items
@@ -32,8 +50,19 @@ public class HumanPlayer : BasicPlayer
     public bool visibleEquippedGasMask;
     #endregion
 
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+
+        /* Set references */
+        humanSoundManager = GetComponent<HumanSoundManager>();
+    }
+
     public override void OnStartLocalPlayer()
     {
+        /* Get references */
+        musicManager = GameObject.Find("MusicManager").GetComponent<MusicManager>();
+
         /* Set stats */
         dead = false;
 
@@ -50,6 +79,8 @@ public class HumanPlayer : BasicPlayer
 
         staminaDrainMultiplier = 1.0f;
         blinkTimerDrainMultiplier = 1.0f;
+
+        lastNearestDistance = 999;
 
         /* Equipped items */
         equippedGasMask = false;
@@ -73,6 +104,8 @@ public class HumanPlayer : BasicPlayer
         Stamina();
         Blink();
         GasMask();
+        ScanForSCP();
+        VisionCone();
 
         if (!isLocalPlayer) { return; }
 
@@ -88,19 +121,36 @@ public class HumanPlayer : BasicPlayer
     {  
         if (sneaking && sprinting)
         {
+            visibleSprinting = true;
+            visibleSneaking = true;
             modifiedMovementSpeed = baseMovementSpeed;
         }
         else if (sprinting)
         {
+            visibleSprinting = true;
+            visibleSneaking = false;
             modifiedMovementSpeed = baseMovementSpeed * sprintSpeedMultiplier;
         }
         else if (sneaking)
         {
+            visibleSprinting = false;
+            visibleSneaking = true;
             modifiedMovementSpeed = baseMovementSpeed * sneakSpeedMultiplier;
         }
         else
         {
+            visibleSprinting = false;
+            visibleSneaking = false;
             modifiedMovementSpeed = baseMovementSpeed;
+        }
+
+        if (movementInput.x > 0 || movementInput.x < 0 || movementInput.y > 0 || movementInput.y < 0)
+        {
+            visibleMoving = true;
+        }
+        else
+        {
+            visibleMoving = false;
         }
 
         characterController.Move((characterController.transform.right * movementInput.x + characterController.transform.forward * movementInput.y) * Time.deltaTime);
@@ -165,6 +215,129 @@ public class HumanPlayer : BasicPlayer
         visibleEquippedGasMask = equippedGasMask;
     }
 
+    private void ScanForSCP()
+    {
+        scanTimer -= 1.0f * Time.deltaTime;
+
+        if (scanTimer <= 0.0f)
+        {
+            scanTimer = 10.0f;
+
+            if (scannedSCP.Count > 0)
+            {
+                foreach(GameObject SCP in scannedSCP)
+                {
+                    if (!visibleSCP.Contains(SCP))
+                    {
+                        SCP.GetComponent<SCPAI>().IsVisible(this, false);
+                    }
+                }
+            }
+
+            scannedSCP.Clear();
+            GameObject[] SCPArray = GameObject.FindGameObjectsWithTag("SCP");
+
+            if (SCPArray.Length > 0)
+            {
+                foreach(GameObject SCP in SCPArray)
+                {
+                    scannedSCP.Add(SCP);
+                }
+            }
+        }
+    }
+
+    private void VisionCone()
+    {
+        visibleSCP.Clear();
+
+        if (scannedSCP.Count > 0)
+        {
+            foreach (GameObject SCP in scannedSCP)
+            {
+                if (Vector3.Distance(transform.position, SCP.transform.position) <= 60)
+                {
+                    Vector3 positionViaCamera = Camera.main.WorldToViewportPoint(SCP.transform.position);
+                    bool isVisible = (positionViaCamera.z > 0 && positionViaCamera.x > 0 && positionViaCamera.x < 1 && positionViaCamera.y > 0 && positionViaCamera.y < 1);
+
+                    if (isVisible)
+                    {
+                        RaycastHit hit;
+                        if (Physics.Raycast(transform.position, (SCP.transform.position - transform.position), out hit, 30))
+                        {
+                            if (hit.transform.gameObject.tag == "SCP")
+                            {
+                                Debug.DrawRay(transform.position, (hit.point - transform.position), Color.green);
+                                visibleSCP.Add(SCP);
+                            }
+                            else
+                            {
+                                Debug.DrawRay(transform.position, (hit.point - transform.position), Color.red);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        foreach (GameObject SCP in scannedSCP)
+        {
+            lastNearestDistance = GetNearestSCPDistance();
+            musicManager.ChangeChaseDistance(lastNearestDistance);
+
+            int sequenceIndex = 0;
+
+            if (SCP.GetComponent<SCPAI>().visibleSCPType >= 0 && SCP.GetComponent<SCPAI>().visibleSCPType <= 4)
+            {
+                sequenceIndex = SCP.GetComponent<SCPAI>().visibleSCPType;
+            }
+            else
+            {
+                sequenceIndex = 0;
+            }
+
+            if (visibleSCP.Contains(SCP))
+            {
+                SCP.GetComponent<SCPAI>().IsVisible(this, true);
+                chaseTimer = 30.0f;
+                musicManager.ActivateSequence(sequenceIndex);
+            }
+            else
+            {
+                chaseTimer -= 1.0f * Time.deltaTime;
+                SCP.GetComponent<SCPAI>().IsVisible(this, false);
+            }
+        }
+    }
+
+    private float GetNearestSCPDistance()
+    {
+        if (visibleSCP.Count > 0)
+        {
+            float nearestDistance = 999;
+
+            foreach (GameObject SCP in visibleSCP)
+            {
+                float distance = Vector3.Distance(transform.position, SCP.transform.position);
+
+                if (nearestDistance == 999 || nearestDistance > distance)
+                {
+                    nearestDistance = distance;
+                }
+            }
+
+            return nearestDistance;
+        }
+
+        if (chaseTimer <= 0.0f)
+        {
+            lastNearestDistance = 999;
+            return -99;
+        }
+
+        return lastNearestDistance;
+    }
+
     private bool SprintInput()
     {
         return Input.GetKey(KeyCode.LeftShift);
@@ -185,6 +358,11 @@ public class HumanPlayer : BasicPlayer
         if (Input.GetKeyDown(KeyCode.G))
         {
             equippedGasMask = !equippedGasMask;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Semicolon))
+        {
+            chaseTimer = 0.0f;
         }
     }
 }

@@ -1072,6 +1072,7 @@ GameObject:
   - component: {fileID: 4342890543798737559}
   - component: {fileID: 7555735204853221985}
   - component: {fileID: 4489417939292045148}
+  - component: {fileID: 8935956843500698212}
   m_Layer: 0
   m_Name: HumanPlayer
   m_TagString: Player
@@ -1185,6 +1186,9 @@ MonoBehaviour:
   visibleMaxStamina: 0
   visibleBlinkTimer: 0
   visibleMaxBlinkTimer: 0
+  visibleMoving: 0
+  visibleSprinting: 0
+  visibleSneaking: 0
   visibleEquippedGasMask: 0
 --- !u!114 &4489417939292045148
 MonoBehaviour:
@@ -1208,6 +1212,66 @@ MonoBehaviour:
   overlayBlink:
   - {fileID: 6029502562604854023}
   - {fileID: 1303163662683599408}
+  overlayBlinkOrigin: []
+--- !u!114 &8935956843500698212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5901607731419648102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89eb1b47d12bdda43a10aed302ae3e3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  footstepSource: {fileID: 4810757245563495190}
+  footstepsWalkGeneric:
+  - {fileID: 8300000, guid: 963d061ba3e20304898f645055754b50, type: 3}
+  - {fileID: 8300000, guid: c3a826b009f5d8b40a2548c08b2ae9e8, type: 3}
+  - {fileID: 8300000, guid: 749ed552c7ec048419e156accd324a36, type: 3}
+  - {fileID: 8300000, guid: d960fee572d3d054488f4034d3404c0b, type: 3}
+  - {fileID: 8300000, guid: 506617958739d6441853e698ed8eca1c, type: 3}
+  - {fileID: 8300000, guid: 9beb23995170bc744bc924c8c78935e6, type: 3}
+  - {fileID: 8300000, guid: f51a873725c3539439ee22a288be59c4, type: 3}
+  - {fileID: 8300000, guid: e9759868f8c09334cadd1415b079e2e5, type: 3}
+  footstepsWalkMetal:
+  - {fileID: 8300000, guid: 2385e0fee01817448a83e8a79320f1c5, type: 3}
+  - {fileID: 8300000, guid: 05826283a78775742b26f9110d72c0f7, type: 3}
+  - {fileID: 8300000, guid: 8ca667fdc991b5f4fbcafc823191ee36, type: 3}
+  - {fileID: 8300000, guid: bb1157c12b845624caa5caebb8d4f607, type: 3}
+  - {fileID: 8300000, guid: 6628fc7adbfc1284ab14e223190e7fda, type: 3}
+  - {fileID: 8300000, guid: ca0fa91655ed72947bdbb8bce50732d3, type: 3}
+  - {fileID: 8300000, guid: 03cf4be47cb2bb3438081bd15be99616, type: 3}
+  - {fileID: 8300000, guid: c7a24232882c8bf4ea86a7a774a6acc6, type: 3}
+  footstepsWalkForest:
+  - {fileID: 8300000, guid: 3fb3ea91c56a252448a853ab81572ae4, type: 3}
+  - {fileID: 8300000, guid: ab3259a89e9bcde44a35686ea5ad9c19, type: 3}
+  - {fileID: 8300000, guid: dfc4eb560045c7c46b1a5af76d9eba2c, type: 3}
+  footstepsWalkCorrode:
+  - {fileID: 8300000, guid: f3415047683982e448912b6dfe5ad613, type: 3}
+  - {fileID: 8300000, guid: 16df1ec442e5cc24d82e814d71a48573, type: 3}
+  - {fileID: 8300000, guid: f61ef7990629f1d42a3d5d7d0d448dda, type: 3}
+  footstepsRunGeneric:
+  - {fileID: 8300000, guid: b54b08102f4acb34dbed7ec7504cb19a, type: 3}
+  - {fileID: 8300000, guid: 3816a70d44e2c964aac9bb139f29cea5, type: 3}
+  - {fileID: 8300000, guid: db64d94cc01053745bc951712e638763, type: 3}
+  - {fileID: 8300000, guid: 6cc79506184dba94ea96886a60141bd7, type: 3}
+  - {fileID: 8300000, guid: a4fbf0e0e899a5b4f9f98fc71ba612b5, type: 3}
+  - {fileID: 8300000, guid: 856da4146f075124492080a61fb732e5, type: 3}
+  - {fileID: 8300000, guid: 32fc11a16112d944ea135058c1193ced, type: 3}
+  - {fileID: 8300000, guid: 58d20fbbf7caf4540859e84195f83fc9, type: 3}
+  footstepsRunMetal:
+  - {fileID: 8300000, guid: dbdd092e13d12fd40ad90fbf53bd943f, type: 3}
+  - {fileID: 8300000, guid: 0638299f0fb8da94eb40e61f122f0ee5, type: 3}
+  - {fileID: 8300000, guid: 28999ca93f22c6f45836c8175afe433e, type: 3}
+  - {fileID: 8300000, guid: c278476752990c84297e42647580ae54, type: 3}
+  - {fileID: 8300000, guid: d79205ef1c2aafd478b41b109d973f78, type: 3}
+  - {fileID: 8300000, guid: 7d56af4eba1936d4eb408d752cc4430c, type: 3}
+  - {fileID: 8300000, guid: 57607785306c8f84b95ddc47e3b9ef21, type: 3}
+  - {fileID: 8300000, guid: 1373fc09e76694b45a4fdbbc150ec08f, type: 3}
 --- !u!1 &6605563478109920315
 GameObject:
   m_ObjectHideFlags: 0

@@ -43,7 +43,8 @@ public class MusicManager : NetworkBehaviour
 
         Fading();
         PlayChaseSequence(chaseDistance);
-        DebugInput();
+        
+        // DebugInput();
     }
 
     private void PlayClip(int index)
@@ -280,7 +281,7 @@ public class MusicManager : NetworkBehaviour
                 {
                     chaseMusicState = ChaseMusicState.LoopDeath;
                 }
-                else if (distance < 30 && chaseMusicSelection.Length > 3)
+                else if (distance < 15 && chaseMusicSelection.Length > 3)
                 {
                     chaseMusicState = ChaseMusicState.LoopNearby;
                 }
