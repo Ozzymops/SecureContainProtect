@@ -267,8 +267,24 @@ public class HumanPlayer : BasicPlayer
                         {
                             if (hit.transform.gameObject.tag == "SCP")
                             {
-                                Debug.DrawRay(transform.position, (hit.point - transform.position), Color.green);
-                                visibleSCP.Add(SCP);
+                                if (blinkTimer != 0.0f)
+                                {
+                                    // if not blinking
+                                    if (SCP.GetComponent<SCPAI>().visibleSCPType == 4)
+                                    {
+                                        musicManager.PlayShyHorrorClip();
+                                    }
+                                    Debug.DrawRay(transform.position, (hit.point - transform.position), Color.green);
+                                    visibleSCP.Add(SCP);
+                                }
+                                else
+                                {
+                                    if (SCP.GetComponent<SCPAI>().visibleSCPType != 4)
+                                    {
+                                        musicManager.ResetHorrorCooldown();
+                                    }                              
+                                    Debug.DrawRay(transform.position, (hit.point - transform.position), Color.yellow);
+                                }
                             }
                             else
                             {
@@ -324,6 +340,11 @@ public class HumanPlayer : BasicPlayer
                 {
                     nearestDistance = distance;
                 }
+            }
+
+            if (nearestDistance < 10)
+            {
+                musicManager.PlayHorrorClip();
             }
 
             return nearestDistance;

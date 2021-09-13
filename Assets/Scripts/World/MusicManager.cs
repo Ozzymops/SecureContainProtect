@@ -12,6 +12,9 @@ public class MusicManager : NetworkBehaviour
     [SerializeField] private AudioClip[] horrorList;
     private float maxVolume;
 
+    /* Horror */
+    private float horrorCooldown;
+
     /* Chase music */
     private enum ChaseMusicState { Intro, Loop, LoopNearby, LoopDeath, Outro, Done };
     private ChaseMusicState chaseMusicState;
@@ -20,6 +23,10 @@ public class MusicManager : NetworkBehaviour
     [SerializeField] private float chaseDistance;
     private bool doingSequence;
     [SerializeField] private float clipTimer;
+
+    /* Misc. */
+    private float delayTimer;
+    private int delayedType;
 
     public override void OnStartClient()
     {
@@ -64,16 +71,30 @@ public class MusicManager : NetworkBehaviour
         }
     }
 
-    private void PlayHorrorClip()
+    public void PlayHorrorClip()
     {
-        horrorSource.clip = horrorList[Random.Range(0, horrorList.Length)];
-        horrorSource.Play();
+        if (horrorCooldown <= 0.0f) 
+        {
+            horrorCooldown = 20.0f;
+            horrorSource.clip = horrorList[Random.Range(0, horrorList.Length)];
+            horrorSource.Play();
+        }
     }
 
-    private void PlayShyHorrorClip()
+    public void PlayShyHorrorClip()
     {
-        horrorSource.clip = horrorList[horrorList.Length - 1];
-        horrorSource.Play();
+        if (horrorCooldown <= 0.0f)
+        {          
+            horrorCooldown = 9999.0f;
+            horrorSource.clip = horrorList[horrorList.Length - 1];
+            horrorSource.Play();
+            ActivateSequenceDelayed(4, horrorSource.clip.length - 1.0f);
+        }
+    }
+
+    public void ResetHorrorCooldown()
+    {
+        horrorCooldown = 0.0f;
     }
 
     private void Fading()
@@ -91,6 +112,11 @@ public class MusicManager : NetworkBehaviour
         if (clipTimer > 0.0f)
         {
             clipTimer -= 1.0f * Time.deltaTime;
+        }
+
+        if (horrorCooldown > 0.0f)
+        {
+            horrorCooldown -= 1.0f * Time.deltaTime;
         }
     }
 
@@ -163,6 +189,12 @@ public class MusicManager : NetworkBehaviour
     }
 
     /* Events */
+    private void ActivateSequenceDelayed(int type, float timer)
+    {
+        delayTimer = timer;
+        delayedType = type;
+    }
+
     public void ActivateSequence(int type)
     {
         if (!doingSequence)

@@ -396,6 +396,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1132148452334515643, guid: cc62253ef87f34a4f92e003ff53a2080, type: 3}
+      propertyPath: scpType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1132148452334515643, guid: cc62253ef87f34a4f92e003ff53a2080, type: 3}
+      propertyPath: visibleSCPType
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4746816705586071199, guid: cc62253ef87f34a4f92e003ff53a2080, type: 3}
       propertyPath: m_Name
       value: SculptureAI
@@ -414,7 +422,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5757830968295989221, guid: cc62253ef87f34a4f92e003ff53a2080, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -2.346315
+      value: 8.1
       objectReference: {fileID: 0}
     - target: {fileID: 5757830968295989221, guid: cc62253ef87f34a4f92e003ff53a2080, type: 3}
       propertyPath: m_LocalRotation.w

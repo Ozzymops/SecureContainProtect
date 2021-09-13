@@ -224,10 +224,16 @@ MonoBehaviour:
   - {fileID: 8300000, guid: c0556ae4e57de544a847c10521f5ba68, type: 3}
   - {fileID: 8300000, guid: a1f2b9808e666ae47852d76517c1a01f, type: 3}
   horrorList:
-  - {fileID: 8300000, guid: 603465d189cd1ad489c575958120af48, type: 3}
-  - {fileID: 8300000, guid: 8467ca9fd8a9af543973932b9b11bdff, type: 3}
-  - {fileID: 8300000, guid: 2e252c44f71c20c48853c5ff3fc7d95d, type: 3}
+  - {fileID: 8300000, guid: 7cf47818ebea1ca4ba8950a5b7392ea9, type: 3}
+  - {fileID: 8300000, guid: 33875904d10810b45a820b40f7762eb8, type: 3}
+  - {fileID: 8300000, guid: 432f7d0c43b6ed941a1eafa71ba7e589, type: 3}
+  - {fileID: 8300000, guid: 3cbc6dd040011d2409911825372197ae, type: 3}
+  - {fileID: 8300000, guid: ef4baa4a2e7052c4199c7c53cd22568a, type: 3}
+  - {fileID: 8300000, guid: c16548bc74e33e74a84949e4ccb6ca40, type: 3}
+  - {fileID: 8300000, guid: ff5e0122ffc2e1c49a91a7d32375367e, type: 3}
   - {fileID: 8300000, guid: 5e14f372202291a4e9218cb81ee0bd24, type: 3}
+  chaseDistance: 0
+  clipTimer: 0
 --- !u!1 &8814860919558746781
 GameObject:
   m_ObjectHideFlags: 0
