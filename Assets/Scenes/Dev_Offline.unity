@@ -185,7 +185,7 @@ MonoBehaviour:
   autoStartServerBuild: 1
   serverTickRate: 30
   offlineScene: Assets/Scenes/Dev_Offline.unity
-  onlineScene: Assets/Scenes/Dev_Online.unity
+  onlineScene: Assets/Scenes/Dev_Online2.unity
   transport: {fileID: 221080551}
   networkAddress: localhost
   maxConnections: 100

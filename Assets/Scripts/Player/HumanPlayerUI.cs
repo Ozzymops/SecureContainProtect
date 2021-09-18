@@ -5,8 +5,9 @@ using UnityEngine.UI;
 
 public class HumanPlayerUI : MonoBehaviour
 {
-    [SerializeField] private bool running;
-    [SerializeField] private HumanPlayer humanPlayer;
+    private HumanPlayer player;
+    private bool runThisScript;
+
     [SerializeField] private Canvas canvas;
     [SerializeField] private Text healthText;
     [SerializeField] private Text staminaText;
@@ -17,21 +18,25 @@ public class HumanPlayerUI : MonoBehaviour
 
     private void Start()
     {
-        humanPlayer = GetComponent<HumanPlayer>();
-        running = humanPlayer.isLocalPlayer;
+        player = GetComponent<HumanPlayer>();
+        runThisScript = player.isLocalPlayer;
 
         overlayBlinkOrigin = new Vector3[] { overlayBlink[0].transform.localPosition, overlayBlink[1].transform.localPosition };
     }
 
     private void Update()
     {
-        if (running)
+        if (runThisScript)
         {
-            healthText.text = string.Format("HP: {0} / {1}", Mathf.CeilToInt(humanPlayer.visibleHealth), Mathf.CeilToInt(humanPlayer.visibleMaxHealth));
-            staminaText.text = string.Format("ST: {0} / {1}", Mathf.CeilToInt(humanPlayer.visibleStamina), Mathf.CeilToInt(humanPlayer.visibleMaxStamina));
-            blinkText.text = string.Format("BT: {0} / {1}", Mathf.CeilToInt(humanPlayer.visibleBlinkTimer), Mathf.CeilToInt(humanPlayer.visibleMaxBlinkTimer));
+            float[] health = player.GetHealth();
+            float[] stamina = player.GetStamina();
+            float[] blink = player.GetBlink();
 
-            if (humanPlayer.visibleBlinkTimer == 0.0f)
+            healthText.text = string.Format("HP: {0} / {1}", Mathf.CeilToInt(health[0]), Mathf.CeilToInt(health[1]));
+            staminaText.text = string.Format("ST: {0} / {1}", Mathf.CeilToInt(stamina[0]), Mathf.CeilToInt(stamina[1]));
+            blinkText.text = string.Format("BT: {0} / {1}", Mathf.CeilToInt(blink[0]), Mathf.CeilToInt(blink[1]));
+
+            if (blink[0] == 0.0f)
             {
                 overlayBlink[0].transform.localPosition = Vector3.Lerp(overlayBlink[0].transform.localPosition, new Vector3(0, -510, 0), 0.2f);
                 overlayBlink[1].transform.localPosition = Vector3.Lerp(overlayBlink[1].transform.localPosition, new Vector3(0, 510, 0), 0.2f);
@@ -42,7 +47,7 @@ public class HumanPlayerUI : MonoBehaviour
                 overlayBlink[1].transform.localPosition = Vector3.Lerp(overlayBlink[1].transform.localPosition, overlayBlinkOrigin[1], 0.2f);
             }
 
-            if (humanPlayer.visibleEquippedGasMask)
+            if (player.GetGasMask())
             {
                 overlayGasMask.color = new Color(overlayGasMask.color.r, overlayGasMask.color.g, overlayGasMask.color.b, 1.0f);
             }
@@ -53,7 +58,7 @@ public class HumanPlayerUI : MonoBehaviour
         }
         else
         {
-            canvas.enabled = false;
+
         }
     }
 }
